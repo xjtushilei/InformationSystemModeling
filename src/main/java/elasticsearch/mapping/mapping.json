@@ -1,0 +1,38 @@
+{
+    "article": {
+        "_all": {
+            "analyzer": "ik_max_word"
+        },
+        "properties": {
+            "newsTitle": {
+                "type": "text",
+                "index": "analyzed",
+                "analyzer": "ik_max_word",
+                 "boost": 10
+            },
+            "newsContent": {
+                "type": "text",
+                "index": "analyzed",
+                "analyzer": "ik_max_word",
+                "boost": 5
+            },
+            "newsSource": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "newsURL": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "newsScratchTime": {
+                "type": "date",
+                "index": "not_analyzed",
+              	"format":"yyyy-MM-dd HH:mm:ss"
+            },
+            "newsType": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    }
+}

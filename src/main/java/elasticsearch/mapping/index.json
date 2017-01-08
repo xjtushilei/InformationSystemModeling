@@ -1,0 +1,13 @@
+{
+    "number_of_replicas": 0,
+    "index": {
+        "analysis": {
+            "analyzer": {
+                "ik_max_word": {
+                    "type": "custom",
+                    "tokenizer": "ik_max_word"
+                }
+            }
+        }
+    }
+}
