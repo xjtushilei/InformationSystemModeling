@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("/search")
 @Api(value="search")
-public class search {
+public class searchAPI {
 	public static void main(String[] args) {
 		get("野马", "新浪新闻", "汽车", 1, 10, "desc");
 	}
@@ -152,6 +152,9 @@ public class search {
                 System.out.println(str.string());
             }
         }
+		
+		
+		client.close();
 		return null;
 		
 		

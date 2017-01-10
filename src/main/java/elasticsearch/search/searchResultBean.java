@@ -1,6 +1,7 @@
 package elasticsearch.search;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class searchResultBean
 {
@@ -9,20 +10,21 @@ public class searchResultBean
 	private int page;
 	private int pagesize;
 	private ArrayList<newsBean> newsList;
-	private ArrayList<facetBean> facets;
+	private Map<String , Long> newsSourceAggregation;
+	private Map<String , Long> newsTypeAggregation;
 	public searchResultBean() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public searchResultBean(String usetime, long total, int page, int pagesize, ArrayList<newsBean> newsList,
-			ArrayList<facetBean> facets) {
+			Map<String, Long> newsSourceAggregation, Map<String, Long> newsTypeAggregation) {
 		super();
 		this.usetime = usetime;
 		this.total = total;
 		this.page = page;
 		this.pagesize = pagesize;
 		this.newsList = newsList;
-		this.facets = facets;
+		this.newsSourceAggregation = newsSourceAggregation;
+		this.newsTypeAggregation = newsTypeAggregation;
 	}
 	public String getUsetime() {
 		return usetime;
@@ -54,13 +56,18 @@ public class searchResultBean
 	public void setNewsList(ArrayList<newsBean> newsList) {
 		this.newsList = newsList;
 	}
-	public ArrayList<facetBean> getFacets() {
-		return facets;
+	public Map<String, Long> getNewsSourceAggregation() {
+		return newsSourceAggregation;
 	}
-	public void setFacets(ArrayList<facetBean> facets) {
-		this.facets = facets;
+	public void setNewsSourceAggregation(Map<String, Long> newsSourceAggregation) {
+		this.newsSourceAggregation = newsSourceAggregation;
 	}
-	
+	public Map<String, Long> getNewsTypeAggregation() {
+		return newsTypeAggregation;
+	}
+	public void setNewsTypeAggregation(Map<String, Long> newsTypeAggregation) {
+		this.newsTypeAggregation = newsTypeAggregation;
+	}
 	
 	
 	
