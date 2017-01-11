@@ -1,6 +1,6 @@
 package elasticsearch.search;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class searchResultBean
@@ -9,13 +9,13 @@ public class searchResultBean
 	private long total;
 	private int page;
 	private int pagesize;
-	private ArrayList<newsBean> newsList;
+	private LinkedList<newsBean> newsList;
 	private Map<String , Long> newsSourceAggregation;
 	private Map<String , Long> newsTypeAggregation;
-	public searchResultBean() {
-		super();
-	}
-	public searchResultBean(String usetime, long total, int page, int pagesize, ArrayList<newsBean> newsList,
+	
+	
+	
+	public searchResultBean(String usetime, long total, int page, int pagesize, LinkedList<newsBean> newsList,
 			Map<String, Long> newsSourceAggregation, Map<String, Long> newsTypeAggregation) {
 		super();
 		this.usetime = usetime;
@@ -25,6 +25,9 @@ public class searchResultBean
 		this.newsList = newsList;
 		this.newsSourceAggregation = newsSourceAggregation;
 		this.newsTypeAggregation = newsTypeAggregation;
+	}
+	public searchResultBean() {
+		super();
 	}
 	public String getUsetime() {
 		return usetime;
@@ -50,10 +53,10 @@ public class searchResultBean
 	public void setPagesize(int pagesize) {
 		this.pagesize = pagesize;
 	}
-	public ArrayList<newsBean> getNewsList() {
+	public LinkedList<newsBean> getNewsList() {
 		return newsList;
 	}
-	public void setNewsList(ArrayList<newsBean> newsList) {
+	public void setNewsList(LinkedList<newsBean> newsList) {
 		this.newsList = newsList;
 	}
 	public Map<String, Long> getNewsSourceAggregation() {

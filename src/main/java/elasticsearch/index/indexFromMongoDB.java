@@ -51,7 +51,7 @@ public class indexFromMongoDB {
 				for (Document doc : docs) {
 					
 					Map<String, Object> sourceMap=new HashMap<String, Object>();
-					sourceMap.put("newsContent", doc.get("newsContent"));
+					sourceMap.put("newsContent", Utils.HtmlSpirit.delHTMLTag(doc.get("newsContent").toString()));
 					sourceMap.put("newsSource", doc.get("newsSource"));
 					sourceMap.put("newsURL", doc.get("newsURL"));
 					sourceMap.put("newsTitle", doc.get("newsTitle"));
