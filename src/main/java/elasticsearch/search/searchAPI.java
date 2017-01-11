@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -46,7 +46,7 @@ public class searchAPI {
 
 
 	public static void main(String[] args) {
-		new searchAPI().get("中国汽车", "新浪新闻", "", 1, 10, "测试ip","测试-西安市");
+		get("中国汽车", "新浪新闻", "", 1, 10, "测试ip","测试-西安市");
 	}
 
 	
@@ -56,7 +56,7 @@ public class searchAPI {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "正常返回结果", response = searchResultBean.class)})
 	@Consumes("application/x-www-form-urlencoded" + ";charset=" + "UTF-8")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + "UTF-8")
-	public Response get(
+	public static Response get(
 			@DefaultValue("") @ApiParam(value = "key", required = true) @QueryParam("q") String q, // 搜索关键词
 			@DefaultValue("新浪新闻") @ApiParam(value = "新闻来源", required = false) @QueryParam("newsSource") String newsSource,
 			@DefaultValue("军事") @ApiParam(value = "新闻分类", required = false) @QueryParam("newsType") String newsType,
@@ -67,8 +67,7 @@ public class searchAPI {
 		/*
 		 * 获取ip，并记录查询记录
 		 */
-		Client client = new ElasticSearchUtils().getClient();
-
+		TransportClient  client = new ElasticSearchUtils().getClient();
 		BoolQueryBuilder boolq = new BoolQueryBuilder();
 		if (q.equals("")) {
 			boolq.must(QueryBuilders.matchAllQuery());
@@ -83,7 +82,6 @@ public class searchAPI {
 		if (!newsSource.equals("")) {
 			boolq.must(QueryBuilders.matchPhraseQuery("newsSource", newsSource));
 		}
-
 		
 		/**
 		 * 高亮设置
@@ -101,21 +99,19 @@ public class searchAPI {
 		TermsAggregationBuilder AggnewsSource = AggregationBuilders.terms("newsSource").field("newsSource");
 		TermsAggregationBuilder AggnewsType = AggregationBuilders.terms("newsType").field("newsType");
 
-		
 		/**
 		 * 开始搜索
 		 */
 		SearchResponse response = client.prepareSearch("news").setTypes("article").setSearchType(SearchType.DEFAULT)
 				.setQuery(boolq) // Query
 				.setFrom(pagesize * (page - 1)).setSize(pagesize).addAggregation(AggnewsType)
-				.addAggregation(AggnewsSource).highlighter(hiBuilder)
+				.addAggregation(AggnewsSource).highlighter(hiBuilder)  
 				// .addSort(sortbuilder)
 				.setExplain(true) // 设置是否按查询匹配度排序
 				.get();
 		SearchHits myhits = response.getHits();
 //		logger.info(response.toString());
 
-		
 		
 		Aggregations aggs = response.getAggregations();
 		Map<String, Long> newsSourceAggregation = new HashMap<>();
@@ -173,7 +169,6 @@ public class searchAPI {
 			logNewsList.add(map);
 		}
 		
-		
 		/**
 		 * 开始存储结果
 		 */
@@ -186,34 +181,31 @@ public class searchAPI {
 		searchResult.setNewsSourceAggregation(newsSourceAggregation);
 		searchResult.setNewsTypeAggregation(newsTypeAggregation);
 
+		/**
+		 * 开始处理日志！
+		 */
+		Map<String, Object> logMap=new HashMap<>();
+		logMap.put("q", q);
+		logMap.put("newsSource", newsSource);
+		logMap.put("newsType", newsType);
+		logMap.put("pagesize", pagesize);
+		logMap.put("page", page);
+		logMap.put("city", city);
+		logMap.put("ip", ip);
+		logMap.put("usetime", response.getTookInMillis());
+		logMap.put("total",myhits.getTotalHits());
+		logMap.put("newsList", logNewsList);
+		ObjectMapper mapper = new ObjectMapper();  
+		try {
+			String json=mapper.writeValueAsString(logMap);
+			//创建芒果DB的驱动 		
+			MongoManager manager = new MongoManager(config.MongoDB_IP, config.MongoDB_Port, config.MongoDB_DataBase_logs);
+			manager.insertOneDocument("Searchlog", json);
+			manager.close();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 		
-//		/**
-//		 * 开始处理日志！
-//		 */
-//		Map<String, Object> logMap=new HashMap<>();
-//		logMap.put("q", q);
-//		logMap.put("newsSource", newsSource);
-//		logMap.put("newsType", newsType);
-//		logMap.put("pagesize", pagesize);
-//		logMap.put("page", page);
-//		logMap.put("city", city);
-//		logMap.put("ip", ip);
-//		logMap.put("usetime", response.getTookInMillis());
-//		logMap.put("total",myhits.getTotalHits());
-//		logMap.put("newsList", logNewsList);
-//		ObjectMapper mapper = new ObjectMapper();  
-//		try {
-//			String json=mapper.writeValueAsString(logMap);
-//			//创建芒果DB的驱动 		
-//			MongoManager manager = new MongoManager(config.MongoDB_IP, config.MongoDB_Port, config.MongoDB_DataBase_logs);
-//			manager.insertOneDocument("Searchlog", json);
-//			manager.close();
-//		} catch (JsonProcessingException e) {
-//			e.printStackTrace();
-//		}
-		
-		
-		client.close();
 		return Response.status(200).entity(searchResult).build();
 		
 

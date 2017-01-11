@@ -128,7 +128,6 @@ public class NewsCrawler extends BreadthCrawler {
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		for (String onetype : "mil|travel|finance|sports|auto|tech|games|eladies|ent|edu|lottery".split("\\|")) {
 			System.err.println(onetype);
 			StartOneType(onetype);
