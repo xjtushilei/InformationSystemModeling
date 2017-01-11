@@ -72,6 +72,19 @@ public class MongoManager {
 	}
 	
 	/**
+	 * 插入一个文档
+	 * 
+	 * 我们可以使用com.mongodb.client.MongoCollection类的 insertMany() 方法来插入一个文档
+	 * 
+	 * @param CollectionName
+	 */
+	public void insertOneDocument(String CollectionName, String json) {
+		MongoCollection<Document> collection = mongoDatabase.getCollection(CollectionName);
+		collection.insertOne(Document.parse(json));
+	}
+	
+	
+	/**
 	 * 
 	 * @param CollectionName	集合的名字
 	 * @param pageSize	每一页大小
