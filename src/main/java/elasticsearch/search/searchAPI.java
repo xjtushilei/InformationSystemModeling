@@ -58,8 +58,8 @@ public class searchAPI {
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + "UTF-8")
 	public static Response get(
 			@DefaultValue("") @ApiParam(value = "key", required = true) @QueryParam("q") String q, // 搜索关键词
-			@DefaultValue("新浪新闻") @ApiParam(value = "新闻来源", required = false) @QueryParam("newsSource") String newsSource,
-			@DefaultValue("军事") @ApiParam(value = "新闻分类", required = false) @QueryParam("newsType") String newsType,
+			@DefaultValue("") @ApiParam(value = "新闻来源", required = false) @QueryParam("newsSource") String newsSource,
+			@DefaultValue("") @ApiParam(value = "新闻分类", required = false) @QueryParam("newsType") String newsType,
 			@DefaultValue("1") @ApiParam(value = "分页功能，页数", required = false) @QueryParam("page") int page,
 			@DefaultValue("10") @ApiParam(value = "分页功能，每页大小", required = false) @QueryParam("pagesize") int pagesize,
 			@DefaultValue("0.0.0.0") @ApiParam(value = "ip", required = false) @QueryParam("ip") String ip,
@@ -67,14 +67,24 @@ public class searchAPI {
 		/*
 		 * 获取ip，并记录查询记录
 		 */
+		System.out.println(q);
+		System.out.println(newsSource);
+		System.out.println(newsType);
+		System.out.println(page);
+		System.out.println(pagesize);
+		System.out.println(ip);
+		System.out.println(city);
+		
+		
 		TransportClient  client = new ElasticSearchUtils().getClient();
 		BoolQueryBuilder boolq = new BoolQueryBuilder();
 		if (q.equals("")) {
 			boolq.must(QueryBuilders.matchAllQuery());
 			// multiMatchQuery(q, "newsTitle", "newsContent")
 		} else {
-			boolq.must(QueryBuilders.matchQuery("newsTitle", q));
-			boolq.must(QueryBuilders.matchQuery("newsContent", q));
+			boolq.must(QueryBuilders.multiMatchQuery(q, "newsTitle","newsContent"));
+//			boolq.must(QueryBuilders.matchQuery("newsTitle", q));
+//			boolq.must(QueryBuilders.matchQuery("newsContent", q));
 		}
 		if (!newsType.equals("")) {
 			boolq.must(QueryBuilders.matchPhraseQuery("newsType", newsType));
@@ -87,10 +97,10 @@ public class searchAPI {
 		 * 高亮设置
 		 */
 		HighlightBuilder hiBuilder = new HighlightBuilder();
-		hiBuilder.preTags("<em>");
-		hiBuilder.postTags("</em>");
-		hiBuilder.field("newsTitle", 50);
-		hiBuilder.field("newsContent", 150);
+		hiBuilder.preTags("<span class=\'pointKey\'>");
+		hiBuilder.postTags("</span>");
+		hiBuilder.field("newsTitle", 10);
+		hiBuilder.field("newsContent", 50);
 
 		
 		/**
@@ -143,11 +153,18 @@ public class searchAPI {
 				for (Text str : text) {
 					content = content + str;
 				}
+				if (content.length()>100) {
+					content=content.substring(0,100);
+				}
 				newsBean.setNewsTitle(content);
 			} else {
-				newsBean.setNewsTitle(map.get("newsTitle").toString());
+				String title=map.get("newsTitle").toString();
+				if (title.length()>40) {
+					title=title.substring(0, 40);
+				}
+				newsBean.setNewsTitle(title);
 			}
-
+//			System.out.println(newsBean.getNewsTitle());
 			// 获取content
 			if (hit.getHighlightFields().containsKey("newsContent")) {
 				Text[] text = hit.getHighlightFields().get("newsContent").getFragments();
@@ -155,15 +172,22 @@ public class searchAPI {
 				for (Text str : text) {
 					content = content + str;
 				}
+				if (content.length()>300) {
+					content=content.substring(0,300);
+				}
 				newsBean.setNewsContent(content);
 			} else {
-				newsBean.setNewsTitle(map.get("newsContent").toString());
+				String content=map.get("newsContent").toString();
+				if (content.length()>300) {
+					content=content.substring(0,300);
+				}
+				newsBean.setNewsContent(content);
 			}
 			//获取其他
 			newsBean.setNewsScratchTime(map.get("newsScratchTime").toString());
-			newsBean.setNewsScratchTime(map.get("newsType").toString());
-			newsBean.setNewsScratchTime(map.get("newsURL").toString());
-			newsBean.setNewsScratchTime(map.get("newsSource").toString());
+			newsBean.setNewsType(map.get("newsType").toString());
+			newsBean.setNewsURL(map.get("newsURL").toString());
+			newsBean.setNewsSource(map.get("newsSource").toString());
 			newsList.add(newsBean);
 			
 			logNewsList.add(map);
@@ -198,6 +222,7 @@ public class searchAPI {
 		ObjectMapper mapper = new ObjectMapper();  
 		try {
 			String json=mapper.writeValueAsString(logMap);
+//			System.out.println(mapper.writeValueAsString(searchResult));
 			//创建芒果DB的驱动 		
 			MongoManager manager = new MongoManager(config.MongoDB_IP, config.MongoDB_Port, config.MongoDB_DataBase_logs);
 			manager.insertOneDocument("Searchlog", json);

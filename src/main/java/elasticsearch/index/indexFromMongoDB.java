@@ -49,7 +49,9 @@ public class indexFromMongoDB {
 				List<Document> docs=manager.find("news", pageSize, i);
 				System.out.println(docs.size());
 				for (Document doc : docs) {
-					
+//					if (doc.get("newsTitle").toString().length()>60) {
+//						continue;
+//					}
 					Map<String, Object> sourceMap=new HashMap<String, Object>();
 					sourceMap.put("newsContent", Utils.HtmlSpirit.delHTMLTag(doc.get("newsContent").toString()));
 					sourceMap.put("newsSource", doc.get("newsSource"));
