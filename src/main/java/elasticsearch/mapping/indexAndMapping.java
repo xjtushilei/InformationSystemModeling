@@ -1,5 +1,9 @@
 package elasticsearch.mapping;
-
+/**
+ * 这是一个elasticsearch的mapping文件。后面的json里有拼音的配置和混合的配置
+ * @author shilei
+ * @date 2017-1-16 
+ */
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;

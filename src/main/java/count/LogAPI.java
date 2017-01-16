@@ -1,5 +1,12 @@
 package count;
-
+/**
+ * 这是日志的页面的两个功能。
+ * 		1、显示历史记录
+ * 		2、显示一些统计数据
+ * 		3、显示热词。top-n
+ * @author shilei 
+ * @date 2017年1月16日14:26:54
+ */
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

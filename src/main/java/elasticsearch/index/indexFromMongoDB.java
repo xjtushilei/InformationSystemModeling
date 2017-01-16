@@ -1,5 +1,9 @@
 package elasticsearch.index;
-
+/**
+ * 这是一个elasticsearch的索引程序。从我的芒果DB和女票的芒果DB里把数据索引到我的elasticsearch里区去。
+ * @author shilei
+ * @date 2017-1-16 
+ */
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.io.File;

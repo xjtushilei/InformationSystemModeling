@@ -1,5 +1,8 @@
 package elasticsearch.search;
-
+/**
+ * @author shilei
+ * @date  2017年1月10日14:23:14 
+ */
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -210,28 +213,30 @@ public class searchAPI {
 		/**
 		 * 开始处理日志！
 		 */
-		Map<String, Object> logMap=new HashMap<>();
-		logMap.put("time",new Date());
-		logMap.put("q", q);
-		logMap.put("newsSource", newsSource);
-		logMap.put("newsType", newsType);
-		logMap.put("pagesize", pagesize);
-		logMap.put("page", page);
-		logMap.put("city", city);
-		logMap.put("ip", ip);
-		logMap.put("usetime", response.getTookInMillis());
-		logMap.put("total",myhits.getTotalHits());
-		logMap.put("newsList", logNewsList);
-		ObjectMapper mapper = new ObjectMapper();  
-		try {
-			String json=mapper.writeValueAsString(logMap);
-//			System.out.println(mapper.writeValueAsString(searchResult));
-			//创建芒果DB的驱动 		
-			MongoManager manager = new MongoManager(config.MongoDB_IP, config.MongoDB_Port, config.MongoDB_DataBase_logs);
-			manager.insertOneDocument("Searchlog", json);
-			manager.close();
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		if (page==1) {
+			Map<String, Object> logMap=new HashMap<>();
+			logMap.put("time",new Date());
+			logMap.put("q", q);
+			logMap.put("newsSource", newsSource);
+			logMap.put("newsType", newsType);
+			logMap.put("pagesize", pagesize);
+			logMap.put("page", page);
+			logMap.put("city", city);
+			logMap.put("ip", ip);
+			logMap.put("usetime", response.getTookInMillis());
+			logMap.put("total",myhits.getTotalHits());
+			logMap.put("newsList", logNewsList);
+			ObjectMapper mapper = new ObjectMapper();  
+			try {
+				String json=mapper.writeValueAsString(logMap);
+//				System.out.println(mapper.writeValueAsString(searchResult));
+				//创建芒果DB的驱动 		
+				MongoManager manager = new MongoManager(config.MongoDB_IP, config.MongoDB_Port, config.MongoDB_DataBase_logs);
+				manager.insertOneDocument("Searchlog", json);
+				manager.close();
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return Response.status(200).entity(searchResult).build();

@@ -1,6 +1,8 @@
 package APP;
 /**
  * 可以通过cors-filter包来实现跨域，也可以自己实现过滤器来实现
+ * @author shilei
+ * @date 2016年9月10日
  */
 
 import java.io.IOException;

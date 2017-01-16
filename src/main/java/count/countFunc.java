@@ -1,5 +1,9 @@
 package count;
-
+/**
+ * 这是数据采集的统计界面。没有用在线统计的方式。懒得写了。人工写一下
+ * @author shilei
+ * @date 2017年1月6日
+ */
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;

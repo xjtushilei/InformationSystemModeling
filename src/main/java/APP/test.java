@@ -45,7 +45,7 @@ public class test {
 			else
 			{
 				HashMap<String , String > HashMap=new HashMap<>();
-				HashMap.put("自己的json", "自己的json");
+				HashMap.put("自己的json", domain);
 				HashMap.put("123", "自21313json");
 				return Response.status(200).entity(HashMap).build();
 			}

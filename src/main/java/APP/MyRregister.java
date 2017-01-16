@@ -1,4 +1,9 @@
 package APP;
+/**
+ * 这是swagger的配置文件
+ * @author shilei
+ * @date 2016年12月16日14:28:48
+ */
 import java.util.HashSet;
 import java.util.Set;
 
