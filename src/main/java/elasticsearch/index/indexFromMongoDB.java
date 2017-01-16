@@ -16,27 +16,35 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.Client;
 
+
 import APP.config;
 import Utils.ElasticSearchUtils;
 import Utils.MongoManager;
 
 public class indexFromMongoDB {
 	public static void main(String[] args) throws IOException {
-		indexFromMongo();
+//		indexFromMongo();
+		test();
 	}
 	
+	public static void test() {
+		//创建芒果DB的驱动 		
+		MongoManager manager = new MongoManager("202.117.54.81", config.MongoDB_Port, "SpiderNews");
+		for (String name : manager.getMongoDatabase().listCollectionNames()) {
+			indexFromMongo(name,"202.117.54.81","SpiderNews");
+		}
+	}
 	
-	public static void indexFromMongo() {
+	public static void indexFromMongo(String CollectionName,String ip, String DataBaseName) {
 		
 		//创建芒果DB的驱动 		
-		MongoManager manager = new MongoManager(config.MongoDB_IP, config.MongoDB_Port, config.MongoDB_DataBase);
+		MongoManager manager = new MongoManager(ip, config.MongoDB_Port, DataBaseName);
 		
-		long totalDocs=manager.size("news"); 
+		long totalDocs=manager.size(CollectionName); 
 		System.err.println("总个数:"+totalDocs);
 		//索引时候，每次索引 pageSize个，分page次数完成
-		int pageSize=500;
+		int pageSize=1500;
 		int page=(int) (totalDocs%pageSize==0?totalDocs/pageSize:totalDocs/pageSize+1);
-		System.out.println(page);
 		//创建 Elasticsearch的连接
 		Client client = new ElasticSearchUtils().getClient();
 		HashSet<String> total=new HashSet<>();
@@ -46,7 +54,7 @@ public class indexFromMongoDB {
 			try {
 //				创建 Elasticsearch的批量索引
 				BulkRequestBuilder bulkRequest = client.prepareBulk();
-				List<Document> docs=manager.find("news", pageSize, i);
+				List<Document> docs=manager.find(CollectionName, pageSize, i);
 				System.out.println(docs.size());
 				for (Document doc : docs) {
 //					if (doc.get("newsTitle").toString().length()>60) {
@@ -76,9 +84,9 @@ public class indexFromMongoDB {
 			System.err.println(totalDocs+"->"+total.size());
 			//格式化输出 进度
 			DecimalFormat df2 = new DecimalFormat("00.00");
-			System.out.println( "索引完成: "+ df2.format(((float) i) / page * 100)+ " %");
+			System.out.println(CollectionName+"索引完成: "+ df2.format(((float) i) / page * 100)+ " %");
 		}
-		System.err.println(totalDocs+"->"+total.size());
+		System.err.println(CollectionName+totalDocs+"->"+total.size());
 		manager.close();
 		client.close();
 	}

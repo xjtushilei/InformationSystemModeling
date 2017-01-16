@@ -1,6 +1,7 @@
 package elasticsearch.search;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -67,13 +68,13 @@ public class searchAPI {
 		/*
 		 * 获取ip，并记录查询记录
 		 */
-		System.out.println(q);
-		System.out.println(newsSource);
-		System.out.println(newsType);
-		System.out.println(page);
-		System.out.println(pagesize);
-		System.out.println(ip);
-		System.out.println(city);
+//		System.out.println(q);
+//		System.out.println(newsSource);
+//		System.out.println(newsType);
+//		System.out.println(page);
+//		System.out.println(pagesize);
+//		System.out.println(ip);
+//		System.out.println(city);
 		
 		
 		TransportClient  client = new ElasticSearchUtils().getClient();
@@ -158,7 +159,7 @@ public class searchAPI {
 				}
 				newsBean.setNewsTitle(content);
 			} else {
-				String title=map.get("newsTitle").toString();
+				String title=map.get("newsTitle")==null?"新闻"+q:map.get("newsTitle").toString();;
 				if (title.length()>40) {
 					title=title.substring(0, 40);
 				}
@@ -177,17 +178,18 @@ public class searchAPI {
 				}
 				newsBean.setNewsContent(content);
 			} else {
-				String content=map.get("newsContent").toString();
+				String content=map.get("newsContent")==null?"新闻"+q:map.get("newsContent").toString();
 				if (content.length()>300) {
 					content=content.substring(0,300);
 				}
 				newsBean.setNewsContent(content);
 			}
 			//获取其他
-			newsBean.setNewsScratchTime(map.get("newsScratchTime").toString());
-			newsBean.setNewsType(map.get("newsType").toString());
+			newsBean.setNewsScratchTime(map.get("newsScratchTime")==null?"2017-01-07 22:21:01":map.get("newsScratchTime").toString());
+			newsBean.setNewsType(map.get("newsType")==null?"未知":map.get("newsType").toString());
 			newsBean.setNewsURL(map.get("newsURL").toString());
 			newsBean.setNewsSource(map.get("newsSource").toString());
+			
 			newsList.add(newsBean);
 			
 			logNewsList.add(map);
@@ -209,6 +211,7 @@ public class searchAPI {
 		 * 开始处理日志！
 		 */
 		Map<String, Object> logMap=new HashMap<>();
+		logMap.put("time",new Date());
 		logMap.put("q", q);
 		logMap.put("newsSource", newsSource);
 		logMap.put("newsType", newsType);

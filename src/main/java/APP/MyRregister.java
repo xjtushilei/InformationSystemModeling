@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
+import count.LogAPI;
 import elasticsearch.search.searchAPI;
 import io.swagger.jaxrs.config.BeanConfig;
 
@@ -17,7 +18,7 @@ public class MyRregister extends ResourceConfig {
 		beanConfig.setSchemes(new String[] { "http" });
 		beanConfig.setHost("localhost:8080");
 		beanConfig.setBasePath("/InformationSystemModeling");
-		beanConfig.setResourcePackage("APP,elasticsearch");
+		beanConfig.setResourcePackage("APP,elasticsearch,count");
 		beanConfig.setScan(true);
 		
 	
@@ -35,5 +36,6 @@ public class MyRregister extends ResourceConfig {
         //下面的是个人资源类
     	register(test.class);
     	register(searchAPI.class);
+    	register(LogAPI.class);
     }  
 }  

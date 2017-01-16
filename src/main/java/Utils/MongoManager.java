@@ -11,6 +11,7 @@ import org.bson.conversions.Bson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -25,9 +26,30 @@ import com.mongodb.client.MongoDatabase;
  */
 
 public class MongoManager {
-
+	private static final String username="shilei";
+	private static final String passwd="shilei";
+	private static final String whenCreateDatabaseName="admin";
 	private MongoDatabase mongoDatabase = null;
 	private MongoClient mongoClient = null;
+	public MongoDatabase getMongoDatabase() {
+		return mongoDatabase;
+	}
+
+
+	public void setMongoDatabase(MongoDatabase mongoDatabase) {
+		this.mongoDatabase = mongoDatabase;
+	}
+
+
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
+
+
+	public void setMongoClient(MongoClient mongoClient) {
+		this.mongoClient = mongoClient;
+	}
+
 	private static final Integer soTimeOut = 300000;
 	private static final Integer connectionsPerHost = 500;
 	private static final Integer threadsAllowedToBlockForConnectionMultiplier = 1000;
@@ -39,13 +61,25 @@ public class MongoManager {
 	 * @param port
 	 * @param databaseName
 	 */
+//	public MongoManager(String host, int port, String databaseName) {
+//		mongoClient = new MongoClient(new ServerAddress(host, port),
+//				new MongoClientOptions.Builder().socketTimeout(soTimeOut).connectionsPerHost(connectionsPerHost)
+//						.threadsAllowedToBlockForConnectionMultiplier(threadsAllowedToBlockForConnectionMultiplier)
+//						.socketKeepAlive(true).build());
+//		mongoDatabase = mongoClient.getDatabase(databaseName);
+//	}
 	public MongoManager(String host, int port, String databaseName) {
-		mongoClient = new MongoClient(new ServerAddress(host, port),
+		
+		 MongoCredential credential = MongoCredential.createCredential(username, whenCreateDatabaseName, passwd.toCharArray());  
+         List<MongoCredential> credentials = new ArrayList<MongoCredential>();  
+         credentials.add(credential);  
+		mongoClient = new MongoClient(new ServerAddress(host, port),credentials,
 				new MongoClientOptions.Builder().socketTimeout(soTimeOut).connectionsPerHost(connectionsPerHost)
 						.threadsAllowedToBlockForConnectionMultiplier(threadsAllowedToBlockForConnectionMultiplier)
 						.socketKeepAlive(true).build());
 		mongoDatabase = mongoClient.getDatabase(databaseName);
 	}
+	
 
 	/**
 	 * 创建集合
