@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" >
+<title>新闻世界</title>
+<link rel="shortcut icon" href="favicon.ico">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<script src="plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="dist/js/shileiUtils.js"></script>
+<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+<style type="text/css">
+    body{  
+    background-size:contai;  
+    background-image: url("首页背景图.jpg")
+    } 
+</style>
+</head>
+<body ng-app="myApp"  ng-controller="menu">
+<h1 align="center" style="font-family: yahei;font-size: 70px;margin-top: 10%;font-weight:bold;margin-bottom: 6%;color:white">新闻世界</h1>
+
+<div >
+    <div>
+        <form class="col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1" role="form">
+            <div class="row">
+                <div class="" >
+                    <div class="input-group input-group-lg" style="font-weight:bold;">
+                        <input name=tn type=HIDDEN value=baidu>
+                        <input type="text" class="form-control" id="input" ng-model='q' baiduSug=1>
+                        <span class="input-group-btn">
+                            <button class="btn btn-danger btn-lg" type="button" id="search"  ng-click="go111()">
+                                Search !
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div  align="center" style="padding: 20px">
+                    <p style="font-weight:bold;font-size: 18px"><strong style="color:white">热门搜索 : </strong> 
+                     <span ng-repeat="key in hotkeys">&nbsp;<a href="javascript:void(0)" ng-click="hot(key)" style="color:white" ng-bind="key">鹿晗</a>&nbsp; </span>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
+
+
+<div class="navbar navbar-default navbar-fixed-bottom" >
+    <div class="container" style="padding: 15px;">
+      <div class="pull-right hidden-xs" >
+        <b>Created By</b> <a style="color:#d9534f" href="http://xjtushilei.com" target="_blank" >石磊</a> <a style="color:#d9534f" href="https://guozhaotong.github.io" target="_blank">郭朝彤</a>
+      </div>
+      <strong >Copyright &copy; 2017 <a style="color:#d9534f" href="http://labs.xjtudlc.com/labs/index.html">陕西省天地网技术重点实验室</a>.</strong> All rights
+      reserved.
+    </div>
+</div>
+
+<!-- angularJS -->
+<script src="http://cdn.bootcss.com/angular.js/1.5.8/angular.js"></script>
+<script src="http://cdn.bootcss.com/angular.js/1.5.8/angular-animate.js"></script>
+<script src="http://cdn.bootcss.com/angular.js/1.5.8/angular-sanitize.js"></script>
+<!-- 百度搜索框提示 -->
+<script  src="plugins/baidu/baidu.js"></script>
+
+<script type="text/javascript">
+
+
+
+var app = angular.module('myApp', [ ]);
+app.controller('menu', function($scope, $http) {
+    $scope.hotkeys=["鹿晗","毛泽东"]
+    $scope.hot=function(a){
+        console.log(a)
+       $scope.q=a
+    }
+    $scope.go111=function(a){
+        console.log(a)
+        // $scope.$apply();
+        if ( $scope.q=="") { }
+        setCookie("q",$scope.q,"s10");
+        setCookie("first",1,"s10");
+        window.location.href="search.html";
+    }
+    document.onkeydown = function(e) {
+        var theEvent = window.event || e;
+        var code = theEvent.keyCode || theEvent.which;
+        if (code == 13) {
+            // $("#input").blur()
+            $scope.q= $("#input").val()
+            $('#search').click();
+        }
+    } 
+
+    //预加载
+     $.ajax({
+            url: 'http://'+ip+'/InformationSystemModeling/search/get?page=5',
+            type: 'get',
+            dataType: 'json',
+            cache:false
+        })
+})
+    
+</script>
+</body>
+</html>
