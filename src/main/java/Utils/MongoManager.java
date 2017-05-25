@@ -26,8 +26,8 @@ import com.mongodb.client.MongoDatabase;
  */
 
 public class MongoManager {
-	private static final String username="shilei";
-	private static final String passwd="shilei";
+	private static final String username="";
+	private static final String passwd="";
 	private static final String whenCreateDatabaseName="admin";
 	private MongoDatabase mongoDatabase = null;
 	private MongoClient mongoClient = null;
@@ -61,25 +61,23 @@ public class MongoManager {
 	 * @param port
 	 * @param databaseName
 	 */
+	
+	public MongoManager(String host, int port, String databaseName) {
+		mongoClient = new MongoClient( host , port );
+		mongoDatabase = mongoClient.getDatabase(databaseName);
+	}
 //	public MongoManager(String host, int port, String databaseName) {
-//		mongoClient = new MongoClient(new ServerAddress(host, port),
+//		
+//		 MongoCredential credential = MongoCredential.createCredential(username, whenCreateDatabaseName, passwd.toCharArray());  
+//         List<MongoCredential> credentials = new ArrayList<MongoCredential>();  
+//         credentials.add(credential);  
+//		mongoClient = new MongoClient(new ServerAddress(host, port),credentials,
 //				new MongoClientOptions.Builder().socketTimeout(soTimeOut).connectionsPerHost(connectionsPerHost)
 //						.threadsAllowedToBlockForConnectionMultiplier(threadsAllowedToBlockForConnectionMultiplier)
 //						.socketKeepAlive(true).build());
 //		mongoDatabase = mongoClient.getDatabase(databaseName);
 //	}
-	public MongoManager(String host, int port, String databaseName) {
-		
-		 MongoCredential credential = MongoCredential.createCredential(username, whenCreateDatabaseName, passwd.toCharArray());  
-         List<MongoCredential> credentials = new ArrayList<MongoCredential>();  
-         credentials.add(credential);  
-		mongoClient = new MongoClient(new ServerAddress(host, port),credentials,
-				new MongoClientOptions.Builder().socketTimeout(soTimeOut).connectionsPerHost(connectionsPerHost)
-						.threadsAllowedToBlockForConnectionMultiplier(threadsAllowedToBlockForConnectionMultiplier)
-						.socketKeepAlive(true).build());
-		mongoDatabase = mongoClient.getDatabase(databaseName);
-	}
-	
+//	
 
 	/**
 	 * 创建集合
