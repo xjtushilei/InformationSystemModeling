@@ -21,5 +21,5 @@ public class config {
 	 */
 	public static String ES_clusterName="shilei-application";
 	public static String ES_ip="localhost";
-	public static int ES_port=9300;
+	public static int ES_port=9301;
 }
