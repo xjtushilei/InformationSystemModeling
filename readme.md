@@ -11,5 +11,6 @@
 5. 浏览器浏览 "http://localhost:8089/"
 
 # 说明
+0. 刚开始什么文档都没有，需要使用“索引文件的api”把爬虫到的图片索引到es中才行
 1. html文件目录：`src\main\resources\static`
 2. 索引文件的api文档：http://localhost:8089/swagger-ui.html#/es-controller/indexUsingPOST
