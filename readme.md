@@ -1,4 +1,4 @@
-#需要
+# 需要
 1. windows环境下java8 （支持linux，需要修改es等）
 2. es(https://github.com/xjtushilei/InformationSystemModeling/releases/download/es-6.2.4/elasticsearch-6.2.4.zip) （下载这个版本，里面已经添加了中文ik分词支持）
 
